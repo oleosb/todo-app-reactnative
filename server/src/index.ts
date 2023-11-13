@@ -1,14 +1,6 @@
 import express from "express";
 import "./db";
-import Note, { NoteDocument } from "./models/note";
-import { title } from "process";
-import {
-  create,
-  getAllNotes,
-  getSingleNote,
-  removeSingleNote,
-  update,
-} from "./controllers/note.controller";
+import noteRouter from "./routes/note.route";
 
 // create a server
 const app = express();
@@ -29,26 +21,12 @@ app.use(express.urlencoded({ extended: false }));
 //   });
 // });
 
-app.post("/", (req, res) => {
-  //here we need data so that we can create new note/todo
-  console.log(req.body);
-  res.json({ message: "I'm listening" });
-});
-
 interface IncomingBody {
   title: string;
   description?: string;
 }
 
-app.post("/create", create);
-
-app.patch("/:noteId", update);
-
-app.delete("/:noteId", removeSingleNote);
-
-app.get("/", getAllNotes);
-
-app.get("/:id", getSingleNote);
+app.use("/note", noteRouter);
 
 // listen to some port
 app.listen(8000, () => {
