@@ -67,6 +67,14 @@ app.patch("/:noteId", async (req, res) => {
   res.json({ note });
 });
 
+app.delete("/:noteId", async (req, res) => {
+  const { noteId } = req.params;
+
+  const removeNote = await Note.findByIdAndDelete(noteId);
+  if (!removeNote) return res.json({ error: "Could not remove note!" });
+  res.json({ message: "Note removed successfully." });
+});
+
 // listen to some port
 app.listen(8000, () => {
   console.log("Listening");
