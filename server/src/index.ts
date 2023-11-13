@@ -3,7 +3,7 @@ import express from "express";
 // create a server
 const app = express();
 
-app.get("/", (req, res) => {
+app.post("/", (req, res) => {
   res.send("<h1>Hello World!</h1>");
 });
 
