@@ -6,7 +6,7 @@ interface Props {
   onClick?(): void;
 }
 
-const AppButton: FC<Props> = ({ title, type, onClick }) => {
+const AppButton: FC<Props> = ({ title, type }) => {
   let color = "";
 
   switch (type) {
