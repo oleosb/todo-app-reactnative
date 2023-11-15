@@ -6,6 +6,9 @@ const App = () => {
   // const [title, setTitle] = useState("");
   // const [description, setDescription] = useState("");
 
+  const [notes, setNotes] = useState<
+    { id: string; title: string; description?: string }[]
+  >([]);
   const [values, setValues] = useState({
     title: "",
     description: "",
@@ -30,7 +33,9 @@ const App = () => {
               description: values.description,
             }
           );
-          console.log(data);
+
+          setNotes([data.note, ...notes]);
+          setValues({ title: "", description: "" });
         }}
         className="space-y-4 bg-white shadow-md rounded p-5"
       >
@@ -62,10 +67,10 @@ const App = () => {
       </form>
 
       {/* Note Items */}
-      <NoteItem title="Texto" />
-      <NoteItem title="Texto" />
-      <NoteItem title="Texto" />
-      <NoteItem title="Texto" />
+
+      {notes.map((note, idx) => {
+        return <NoteItem key={idx} title={note.title} />;
+      })}
     </div>
   );
 };

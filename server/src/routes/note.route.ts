@@ -4,14 +4,14 @@ import {
   getAllNotes,
   getSingleNote,
   removeSingleNote,
-  update,
+  updateSingleNote,
 } from "../controllers/note.controller";
 
 const router = Router();
 
 router.post("/create", create);
 
-router.patch("/:noteId", update);
+router.patch("/:noteId", updateSingleNote);
 
 router.delete("/:noteId", removeSingleNote);
 

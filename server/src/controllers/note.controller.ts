@@ -13,15 +13,21 @@ export const create: RequestHandler = async (req, res) => {
   // });
   // await newNote.save();
 
-  await Note.create<NoteDocument>({
+  const newNote = await Note.create<NoteDocument>({
     title: (req.body as IncomingBody).title,
     description: (req.body as IncomingBody).description,
   });
 
-  res.json({ message: "I'm listening to create" });
+  res.json({
+    note: {
+      id: newNote._id,
+      title: newNote.title,
+      description: newNote.description,
+    },
+  });
 };
 
-export const update: RequestHandler = async (req, res) => {
+export const updateSingleNote: RequestHandler = async (req, res) => {
   const { noteId } = req.params;
   // const note = await Note.findById(noteId);
   // if (!note) return res.json({ error: "Note not found" });
