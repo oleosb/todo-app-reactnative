@@ -2,13 +2,15 @@ import { useState, ChangeEventHandler, useEffect } from "react";
 import NoteItem from "./components/NoteItem";
 import axios from "axios";
 
-const App = () => {
-  // const [title, setTitle] = useState("");
-  // const [description, setDescription] = useState("");
+type noteType = {
+  id: string;
+  title: string;
+  description?: string;
+};
 
-  const [notes, setNotes] = useState<
-    { id: string; title: string; description?: string }[]
-  >([]);
+const App = () => {
+  const [noteToView, setNoteToView] = useState<noteType>();
+  const [notes, setNotes] = useState<noteType[]>([]);
   const [values, setValues] = useState({
     title: "",
     description: "",
@@ -48,7 +50,16 @@ const App = () => {
                 description: values.description,
               }
             );
-            console.log(data.note);
+            const updateNotes = notes.map((note) => {
+              if (note.id === selectNoteId) {
+                note.title = data.note.title;
+                note.description = data.note.description;
+              }
+              return note;
+            });
+            setNotes([...updateNotes]);
+
+            setValues({ title: "", description: "" });
             return;
           }
 
@@ -93,17 +104,35 @@ const App = () => {
       </form>
 
       {/* Note Items */}
-
       {notes.map((note) => {
         return (
           <NoteItem
+            onViewClick={() => {
+              if (noteToView) {
+                setNoteToView(undefined);
+              } else {
+                setNoteToView(note);
+              }
+            }}
+            description={
+              noteToView?.id === note.id ? noteToView?.description : ""
+            }
             onEditClick={() => {
               setSelectedNoteId(note.id);
               setValues({
                 title: note.title,
                 description: note.description || "",
               });
-              console.log(selectNoteId)
+              console.log(selectNoteId);
+            }}
+            onDeleteClick={async () => {
+              const result = confirm("Are you sure?");
+              if (result) {
+                await axios.delete("http://localhost:8000/note/" + note.id);
+
+                const updateNotes = notes.filter(({ id }) => id !== note.id);
+                setNotes([...updateNotes]);
+              }
             }}
             key={note.id}
             title={note.title}
