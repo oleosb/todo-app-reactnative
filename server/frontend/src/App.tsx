@@ -18,7 +18,7 @@ const App = () => {
             placeholder="Description"
           ></textarea>
         </div>
-        <div className="text-center">
+        <div className="text-right">
           <button className="bg-blue-500 text-white px-5 py-2 rounded">
             Submit
           </button>
