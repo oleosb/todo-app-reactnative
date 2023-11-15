@@ -1,4 +1,4 @@
-import { useState, ChangeEventHandler } from "react";
+import { useState, ChangeEventHandler, useEffect } from "react";
 import NoteItem from "./components/NoteItem";
 import axios from "axios";
 
@@ -14,6 +14,8 @@ const App = () => {
     description: "",
   });
 
+  const [selectNoteId, setSelectedNoteId] = useState("");
+
   const handleChange: ChangeEventHandler<
     HTMLInputElement | HTMLTextAreaElement
   > = ({ target }) => {
@@ -21,11 +23,35 @@ const App = () => {
     setValues({ ...values, [name]: value });
   };
 
+  useEffect(() => {
+    const fetchNotes = async () => {
+      // call the api and fetch notes
+      const { data } = await axios("http://localhost:8000/note");
+      setNotes(data.notes);
+    };
+
+    fetchNotes();
+  }, []);
+
   return (
     <div className="max-w-3xl mx-auto space-y-6">
       <form
         onSubmit={async (e) => {
           e.preventDefault();
+
+          if (selectNoteId) {
+            //then we want to update
+            const { data } = await axios.patch(
+              "http://localhost:8000/note/" + selectNoteId,
+              {
+                title: values.title,
+                description: values.description,
+              }
+            );
+            console.log(data.note);
+            return;
+          }
+
           const { data } = await axios.post(
             "http://localhost:8000/note/create",
             {
@@ -68,8 +94,21 @@ const App = () => {
 
       {/* Note Items */}
 
-      {notes.map((note, idx) => {
-        return <NoteItem key={idx} title={note.title} />;
+      {notes.map((note) => {
+        return (
+          <NoteItem
+            onEditClick={() => {
+              setSelectedNoteId(note.id);
+              setValues({
+                title: note.title,
+                description: note.description || "",
+              });
+              console.log(selectNoteId)
+            }}
+            key={note.id}
+            title={note.title}
+          />
+        );
       })}
     </div>
   );
